@@ -19,14 +19,3 @@ An interactive, spoiler-light HTML node map for navigating **Bloodborne** and **
 ## Local Usage
 
 No build step or dependencies required — simply open `index.html` in any modern browser.
-
-## Hosting on GitHub Pages
-
-1. Push the repository to GitHub (`main` branch).
-2. In your repository on GitHub, go to **Settings → Pages**.
-3. Under **Build and deployment**, set **Source** to **Deploy from a branch**, choose **`main`** and **`/ (root)`**, then click **Save**.
-4. Your map will be live at `https://lechip.github.io/bloodborne-guide/`.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
