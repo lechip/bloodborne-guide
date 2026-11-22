@@ -353,14 +353,14 @@
         cx: 0,
         cy: 0,
         r: 9,
-        fill: "#202b19",
-        stroke: "#7f9a65",
+        fill: "#132219",
+        stroke: "#72997a",
         "stroke-width": 1.4
       });
       const checkMark = createSvgEl("path", {
         d: "M -4 0 L -1 3 L 4.5 -3",
         fill: "none",
-        stroke: "#cbe0b6",
+        stroke: "#cbe3d0",
         "stroke-width": 1.8,
         "stroke-linecap": "round",
         "stroke-linejoin": "round"
