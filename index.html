@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bloodborne — Hunter's Progression Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Top HUD -->
+  <header class="hud-header">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><span>✦</span></div>
+      <div class="brand-text">
+        <h1>Bloodborne</h1>
+        <p>Hunter's Progression Map · Base Game &amp; The Old Hunters</p>
+      </div>
+    </div>
+
+    <div class="hud-controls">
+      <div class="filter-group" role="group" aria-label="Filter routes">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="main">Main</button>
+        <button class="filter-btn" data-filter="optional">Optional</button>
+        <button class="filter-btn" data-filter="dlc">DLC</button>
+      </div>
+
+      <div class="search-wrap">
+        <input
+          id="search-input"
+          class="search-input"
+          type="text"
+          placeholder="Search boss, area, code…"
+          autocomplete="off"
+        />
+        <div id="search-results" class="search-results"></div>
+      </div>
+
+      <button id="order-toggle-btn" class="hud-btn" title="Show Fextralife recommended step order (#1–#25)">
+        Route Order
+      </button>
+
+      <button id="overlay-toggle-btn" class="hud-btn" title="Optional background game map overlay">
+        Map Overlay
+      </button>
+
+      <div id="progress-text" class="progress-pill">
+        Slain / Cleared: <strong>0 / 25</strong>
+      </div>
+    </div>
+  </header>
+
+  <!-- Subtle initial hint -->
+  <div id="hint-toast" class="hint-toast">
+    Click any node (e.g. <strong>02 · Father Gascoigne</strong>) to illuminate the next possible paths · Drag to pan · Scroll to zoom
+  </div>
+
+  <!-- Optional Map Overlay Popover -->
+  <aside id="overlay-popover" class="overlay-popover" aria-label="Map overlay controls">
+    <h3>Map Image Overlay</h3>
+    <p>Ready for future alignment: load any Yharnam map image behind the logical node graph.</p>
+    <div class="overlay-field">
+      <label for="overlay-file">Image File (PNG / JPG / WebP)</label>
+      <input id="overlay-file" type="file" accept="image/*" />
+    </div>
+    <div class="overlay-field">
+      <label for="overlay-opacity">Opacity</label>
+      <input id="overlay-opacity" type="range" min="0.05" max="0.9" step="0.05" value="0.35" />
+    </div>
+    <div class="overlay-field">
+      <label for="overlay-scale">Scale</label>
+      <input id="overlay-scale" type="range" min="0.5" max="2.0" step="0.05" value="1.0" />
+    </div>
+    <div class="overlay-actions">
+      <button id="overlay-clear" class="hud-btn">Clear Image</button>
+    </div>
+  </aside>
+
+  <!-- Main Interactive SVG Viewport -->
+  <main id="map-viewport" class="map-viewport">
+    <svg id="map-svg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Arrowhead markers -->
+        <marker id="arrow-default" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 1 1.5 L 9 5 L 1 8.5 z" fill="rgba(196, 162, 101, 0.7)" />
+        </marker>
+        <marker id="arrow-blood" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 1 1.5 L 9 5 L 1 8.5 z" fill="#e03543" />
+        </marker>
+        <marker id="arrow-gold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M 1 1.5 L 9 5 L 1 8.5 z" fill="#c4a265" />
+        </marker>
+        <marker id="arrow-dlc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 1 1.5 L 9 5 L 1 8.5 z" fill="rgba(100, 155, 199, 0.78)" />
+        </marker>
+        <marker id="arrow-dlc-bright" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 1 1.5 L 9 5 L 1 8.5 z" fill="#8cc5f0" />
+        </marker>
+      </defs>
+
+      <g id="world-group">
+        <!-- Reserved layer for future game map image overlay -->
+        <g id="overlay-layer"></g>
+        <!-- Phase / Act region frames -->
+        <g id="phase-layer"></g>
+        <!-- Optional Fextralife recommended step polyline -->
+        <g id="recommended-layer"></g>
+        <!-- Directed progression paths -->
+        <g id="edge-layer"></g>
+        <!-- Interactive progression nodes -->
+        <g id="node-layer"></g>
+      </g>
+    </svg>
+  </main>
+
+  <!-- Right Detail Drawer (Hunter's Journal) -->
+  <aside id="detail-drawer" class="detail-drawer" aria-label="Node details">
+    <div id="drawer-header" class="drawer-header">
+      <button id="drawer-close" class="drawer-close" aria-label="Close panel">&times;</button>
+      <div id="drawer-meta" class="drawer-meta-row"></div>
+      <h2 id="drawer-title" class="drawer-title">Select a Node</h2>
+      <div id="drawer-subtitle" class="drawer-subtitle"></div>
+    </div>
+
+    <div class="drawer-body">
+      <p id="drawer-summary" class="drawer-summary"></p>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="info-label">Key / Trigger</div>
+          <div id="drawer-key-item" class="info-value">—</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">Suggested Level</div>
+          <div id="drawer-rec-level" class="info-value">—</div>
+        </div>
+      </div>
+
+      <button id="complete-btn" class="complete-btn">Mark Node Completed</button>
+
+      <div>
+        <div class="section-heading">
+          <span>Next Possible Paths</span>
+        </div>
+        <div id="next-paths-list" class="path-list"></div>
+      </div>
+
+      <div>
+        <div class="section-heading">
+          <span>Reached From</span>
+        </div>
+        <div id="prev-paths-list" class="path-list"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Bottom Legend & Zoom Controls -->
+  <div class="bottom-left-bar">
+    <div class="legend-card" aria-label="Map legend">
+      <span class="legend-item"><span class="legend-swatch swatch-main"></span> Main Path</span>
+      <span class="legend-item"><span class="legend-swatch swatch-opt"></span> Optional</span>
+      <span class="legend-item"><span class="legend-swatch swatch-secret"></span> Secret / Trigger</span>
+      <span class="legend-item"><span class="legend-swatch swatch-dlc"></span> The Old Hunters DLC</span>
+    </div>
+
+    <div class="zoom-controls" aria-label="Zoom controls">
+      <button id="zoom-out" class="zoom-btn" title="Zoom out">−</button>
+      <button id="zoom-fit" class="zoom-btn" title="Fit entire map">Fit</button>
+      <button id="zoom-in" class="zoom-btn" title="Zoom in">+</button>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
