@@ -46,9 +46,9 @@
   --border-iron: #262c2b;
   --border-gold: rgba(150, 168, 158, 0.32);
 
-  --font-display: "Cinzel", "Trajan Pro", "Times New Roman", Georgia, serif;
-  --font-body: "EB Garamond", "Crimson Pro", Georgia, serif;
-  --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "IM Fell English SC", "Cormorant Garamond", "Times New Roman", Georgia, serif;
+  --font-body: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+  --font-ui: "Cormorant Garamond", Georgia, serif;
 }
 
 * {
@@ -128,21 +128,22 @@ body::before {
 
 .brand-text h1 {
   font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: 0.15em;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
   color: var(--text-bone);
   text-transform: uppercase;
-  line-height: 1.1;
+  line-height: 1.05;
   white-space: nowrap;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
 }
 
 .brand-text p {
   font-family: var(--font-body);
-  font-size: 12px;
+  font-size: 13px;
+  font-style: italic;
   color: var(--mist-light);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   opacity: 0.9;
   white-space: nowrap;
 }
@@ -209,7 +210,8 @@ body::before {
   padding: 6px 10px;
   color: var(--text-bone);
   font-family: var(--font-ui);
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 500;
   outline: none;
   transition: border-color 0.2s ease, width 0.2s ease;
 }
@@ -617,15 +619,16 @@ body::before {
 
 .node-title {
   font-family: var(--font-display);
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: 13.5px;
+  font-weight: 400;
   fill: var(--text-bone);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
 .node-subtitle {
   font-family: var(--font-body);
-  font-size: 11.5px;
+  font-size: 12.5px;
+  font-weight: 500;
   fill: var(--text-ash);
 }
 
@@ -774,15 +777,15 @@ body.show-order .node-order-pill {
 
 .drawer-title {
   font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 23px;
+  font-weight: 400;
   color: var(--text-bone);
-  letter-spacing: 0.04em;
-  line-height: 1.2;
+  letter-spacing: 0.05em;
+  line-height: 1.15;
 }
 
 .drawer-subtitle {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--mist-light);
   margin-top: 3px;
   font-style: italic;
@@ -999,7 +1002,8 @@ body.show-order .node-order-pill {
   border-radius: 3px;
   backdrop-filter: blur(6px);
   font-family: var(--font-ui);
-  font-size: 11px;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text-parchment);
 }
 
