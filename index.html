@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#070609" />
   <title>Bloodborne — Hunter's Progression Map</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -55,7 +56,7 @@
 
   <!-- Subtle initial hint -->
   <div id="hint-toast" class="hint-toast">
-    Click any node (e.g. <strong>02 · Father Gascoigne</strong>) to illuminate the next possible paths · Drag to pan · Scroll to zoom
+    Tap any node (e.g. <strong>02 · Father Gascoigne</strong>) to see next paths · Drag to pan · Pinch or scroll to zoom
   </div>
 
   <!-- Optional Map Overlay Popover -->
@@ -116,8 +117,9 @@
     </svg>
   </main>
 
-  <!-- Right Detail Drawer (Hunter's Journal) -->
+  <!-- Right Detail Drawer / Mobile Bottom Sheet (Hunter's Journal) -->
   <aside id="detail-drawer" class="detail-drawer" aria-label="Node details">
+    <div class="drawer-handle" aria-hidden="true"><span></span></div>
     <div id="drawer-header" class="drawer-header">
       <button id="drawer-close" class="drawer-close" aria-label="Close panel">&times;</button>
       <div id="drawer-meta" class="drawer-meta-row"></div>

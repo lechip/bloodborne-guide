@@ -379,7 +379,8 @@
 
       g.addEventListener("click", (ev) => {
         ev.stopPropagation();
-        selectNode(node.id, false);
+        if (didDrag) return;
+        selectNode(node.id, window.innerWidth <= 768);
       });
 
       nodeLayer.appendChild(g);
@@ -403,6 +404,7 @@
     updateVisualStates();
     renderDrawer(node);
     drawer.classList.add("open");
+    document.body.classList.add("drawer-open");
 
     if (shouldPan) {
       centerOnNode(node);
@@ -412,6 +414,7 @@
   function clearSelection() {
     state.selectedId = null;
     drawer.classList.remove("open");
+    document.body.classList.remove("drawer-open");
     updateVisualStates();
   }
 
@@ -564,33 +567,47 @@
   function fitToScreen() {
     const vw = viewport.clientWidth;
     const vh = viewport.clientHeight;
-    const padX = 60;
-    const padY = 100;
+    const isMobile = vw <= 768;
+    const padX = isMobile ? 20 : 60;
+    const padY = isMobile ? 120 : 100;
     const { width, height } = BLOODBORNE_MAP_DATA.worldBounds;
 
     const scaleX = (vw - padX * 2) / width;
     const scaleY = (vh - padY * 2) / height;
-    state.scale = Math.max(0.32, Math.min(1.0, Math.min(scaleX, scaleY)));
+    state.scale = Math.max(0.2, Math.min(1.0, Math.min(scaleX, scaleY)));
     state.tx = (vw - width * state.scale) / 2;
-    state.ty = (vh - height * state.scale) / 2 + 18;
+    state.ty = (vh - height * state.scale) / 2 + (isMobile ? 36 : 18);
     applyTransform();
   }
 
   function centerOnNode(node) {
     const vw = viewport.clientWidth;
     const vh = viewport.clientHeight;
-    // Offset slightly left so the right drawer doesn't cover the focused node
-    const drawerOffset = drawer.classList.contains("open") && vw > 900 ? -160 : 0;
-    const targetScale = Math.max(state.scale, 0.85);
-    state.scale = Math.min(targetScale, 1.15);
-    state.tx = vw / 2 + drawerOffset - node.x * state.scale;
-    state.ty = vh / 2 - node.y * state.scale;
+    const isMobile = vw <= 768;
+
+    if (isMobile) {
+      // Position node in the visible top half above the bottom sheet
+      state.scale = Math.max(state.scale, 0.72);
+      state.scale = Math.min(state.scale, 1.05);
+      const topBarH = 104;
+      const visibleH = vh * 0.46 - topBarH;
+      const targetY = topBarH + Math.max(visibleH / 2, 70);
+      state.tx = vw / 2 - node.x * state.scale;
+      state.ty = targetY - node.y * state.scale;
+    } else {
+      // Offset slightly left so the right drawer doesn't cover the focused node
+      const drawerOffset = drawer.classList.contains("open") && vw > 900 ? -160 : 0;
+      const targetScale = Math.max(state.scale, 0.85);
+      state.scale = Math.min(targetScale, 1.15);
+      state.tx = vw / 2 + drawerOffset - node.x * state.scale;
+      state.ty = vh / 2 - node.y * state.scale;
+    }
     applyTransform();
   }
 
   function zoomAt(factor, clientX, clientY) {
     const prevScale = state.scale;
-    const nextScale = Math.max(0.28, Math.min(2.2, prevScale * factor));
+    const nextScale = Math.max(0.2, Math.min(2.2, prevScale * factor));
     const ratio = nextScale / prevScale;
 
     state.tx = clientX - (clientX - state.tx) * ratio;
@@ -600,9 +617,12 @@
   }
 
   // Mouse pan & wheel zoom
+  let didDrag = false;
+
   viewport.addEventListener("mousedown", (e) => {
     if (e.button !== 0) return;
     state.isPanning = true;
+    didDrag = false;
     state.panStartX = e.clientX;
     state.panStartY = e.clientY;
     state.panOriginX = state.tx;
@@ -612,8 +632,11 @@
 
   window.addEventListener("mousemove", (e) => {
     if (!state.isPanning) return;
-    state.tx = state.panOriginX + (e.clientX - state.panStartX);
-    state.ty = state.panOriginY + (e.clientY - state.panStartY);
+    const dx = e.clientX - state.panStartX;
+    const dy = e.clientY - state.panStartY;
+    if (Math.hypot(dx, dy) > 5) didDrag = true;
+    state.tx = state.panOriginX + dx;
+    state.ty = state.panOriginY + dy;
     applyTransform();
   });
 
@@ -628,7 +651,99 @@
     zoomAt(factor, e.clientX, e.clientY);
   }, { passive: false });
 
+  // Touch pan (1 finger) & pinch-to-zoom (2 fingers)
+  let touchMode = null; // "pan" | "pinch"
+  let pinchStartDist = 0;
+  let pinchStartScale = 1;
+  let pinchMidX = 0;
+  let pinchMidY = 0;
+  let pinchOriginTx = 0;
+  let pinchOriginTy = 0;
+
+  function getTouchDist(t1, t2) {
+    return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+  }
+
+  viewport.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 1) {
+      touchMode = "pan";
+      didDrag = false;
+      state.panStartX = e.touches[0].clientX;
+      state.panStartY = e.touches[0].clientY;
+      state.panOriginX = state.tx;
+      state.panOriginY = state.ty;
+    } else if (e.touches.length === 2) {
+      touchMode = "pinch";
+      didDrag = true;
+      const [t1, t2] = e.touches;
+      pinchStartDist = getTouchDist(t1, t2) || 1;
+      pinchStartScale = state.scale;
+      pinchMidX = (t1.clientX + t2.clientX) / 2;
+      pinchMidY = (t1.clientY + t2.clientY) / 2;
+      pinchOriginTx = state.tx;
+      pinchOriginTy = state.ty;
+    }
+  }, { passive: true });
+
+  viewport.addEventListener("touchmove", (e) => {
+    if (touchMode === "pan" && e.touches.length === 1) {
+      const dx = e.touches[0].clientX - state.panStartX;
+      const dy = e.touches[0].clientY - state.panStartY;
+      if (Math.hypot(dx, dy) > 6) {
+        didDrag = true;
+        e.preventDefault();
+      }
+      state.tx = state.panOriginX + dx;
+      state.ty = state.panOriginY + dy;
+      applyTransform();
+    } else if (touchMode === "pinch" && e.touches.length === 2) {
+      e.preventDefault();
+      const [t1, t2] = e.touches;
+      const dist = getTouchDist(t1, t2) || 1;
+      const curMidX = (t1.clientX + t2.clientX) / 2;
+      const curMidY = (t1.clientY + t2.clientY) / 2;
+      const nextScale = Math.max(0.2, Math.min(2.2, pinchStartScale * (dist / pinchStartDist)));
+      const ratio = nextScale / pinchStartScale;
+
+      state.scale = nextScale;
+      state.tx = curMidX - (pinchMidX - pinchOriginTx) * ratio;
+      state.ty = curMidY - (pinchMidY - pinchOriginTy) * ratio;
+      applyTransform();
+    }
+  }, { passive: false });
+
+  viewport.addEventListener("touchend", (e) => {
+    if (e.touches.length === 0) {
+      touchMode = null;
+    } else if (e.touches.length === 1) {
+      // Seamlessly transition from pinch back to 1-finger pan
+      touchMode = "pan";
+      state.panStartX = e.touches[0].clientX;
+      state.panStartY = e.touches[0].clientY;
+      state.panOriginX = state.tx;
+      state.panOriginY = state.ty;
+    }
+  });
+
+  // Swipe down on mobile bottom sheet handle/header to dismiss
+  let sheetStartY = 0;
+  const drawerHandle = drawer.querySelector(".drawer-handle");
+  [drawerHandle, drawerHeader].forEach(el => {
+    if (!el) return;
+    el.addEventListener("touchstart", (e) => {
+      if (e.touches.length === 1) sheetStartY = e.touches[0].clientY;
+    }, { passive: true });
+    el.addEventListener("touchend", (e) => {
+      if (!e.changedTouches.length) return;
+      const dy = e.changedTouches[0].clientY - sheetStartY;
+      if (dy > 55 && window.innerWidth <= 768) {
+        clearSelection();
+      }
+    }, { passive: true });
+  });
+
   svg.addEventListener("click", () => {
+    if (didDrag) return;
     clearSelection();
   });
 
@@ -790,9 +905,19 @@
   renderOverlayImage();
   updateProgressPill();
   updateVisualStates();
-  fitToScreen();
+
+  if (viewport.clientWidth <= 768) {
+    // Start mobile users zoomed comfortably onto Early Game instead of microscopic full-map view
+    const startNode = nodeById.get("father_gascoigne");
+    state.scale = 0.65;
+    state.tx = viewport.clientWidth / 2 - startNode.x * state.scale;
+    state.ty = viewport.clientHeight / 2 - startNode.y * state.scale + 20;
+    applyTransform();
+  } else {
+    fitToScreen();
+  }
 
   window.addEventListener("resize", () => {
-    if (!state.selectedId) fitToScreen();
+    if (!state.selectedId && viewport.clientWidth > 768) fitToScreen();
   });
 })();
