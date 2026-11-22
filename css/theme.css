@@ -1,0 +1,84 @@
+/* =========================================================
+   Theme Tokens, Reset & Atmospheric Backdrop
+   Palette: Sooty Raven-Black, Misty Sage-Teal Fog,
+   Vivid Blood Moon Crimson & Candlelit Tower Amber
+   ========================================================= */
+
+:root {
+  --bg-void: #08090a;
+  --bg-deep: #0e1011;
+  --bg-panel: rgba(13, 15, 16, 0.95);
+  --bg-card: #121516;
+  --bg-card-hover: #1a1f20;
+
+  --text-bone: #e2e1d9;
+  --text-parchment: #b7c0b9;
+  --text-ash: #7c8982;
+
+  /* Misty weathered sage-slate from the foggy spires */
+  --mist-light: #96a89e;
+  --mist-mid: #5b6e66;
+  --mist-dark: #2a3431;
+  --mist-glow: rgba(138, 162, 150, 0.28);
+
+  /* Warm flickering tower-window candlelight amber */
+  --gold-antique: #e6b85c;
+  --gold-dim: #8a6b35;
+  --gold-glow: rgba(230, 184, 92, 0.34);
+
+  /* Piercing Blood Moon red */
+  --blood-dark: #5c0e15;
+  --blood-crimson: #c91822;
+  --blood-bright: #f5222d;
+  --blood-glow: rgba(245, 34, 45, 0.48);
+
+  /* Deep misty teal for The Old Hunters DLC */
+  --dlc-deep: #12262b;
+  --dlc-blue: #589ba3;
+  --dlc-bright: #92dce0;
+  --dlc-glow: rgba(114, 194, 200, 0.42);
+
+  /* Muted plum-ash for hidden/secret triggers */
+  --secret-purple: #8c6b7a;
+  --secret-bright: #c295a8;
+
+  --completed-green: #38b86a;
+  --completed-bright: #5ce08d;
+  --completed-bg: #0c1d14;
+  --border-iron: #262c2b;
+  --border-gold: rgba(150, 168, 158, 0.32);
+
+  --font-display: "IM Fell English SC", "Cormorant Garamond", "Times New Roman", Georgia, serif;
+  --font-body: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+  --font-ui: "Cormorant Garamond", Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-void);
+  color: var(--text-bone);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* Deep raven-shadow vignette & moody Blood Moon + sage fog atmosphere */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background:
+    radial-gradient(ellipse at 50% 45%, transparent 40%, rgba(5, 5, 6, 0.78) 100%),
+    radial-gradient(ellipse at 50% 104%, rgba(128, 154, 144, 0.2) 0%, rgba(68, 86, 80, 0.09) 28%, transparent 58%),
+    radial-gradient(circle at 80% 18%, rgba(235, 22, 34, 0.11) 0%, transparent 32%);
+}

@@ -1,0 +1,370 @@
+/* =========================================================
+   SVG Map Viewport, Phases, Paths & Progression Nodes
+   ========================================================= */
+
+.map-viewport {
+  position: fixed;
+  inset: 0;
+  cursor: grab;
+  overflow: hidden;
+  touch-action: none;
+  background:
+    /* Piercing Blood Moon core & crimson atmospheric halo in upper-right */
+    radial-gradient(circle at 78% 19%, rgba(242, 24, 34, 0.28) 0%, rgba(210, 28, 38, 0.14) 7%, rgba(160, 42, 48, 0.07) 16%, transparent 34%),
+    /* Misty pale sage-teal overcast sky behind spires */
+    radial-gradient(ellipse at 52% 24%, rgba(114, 138, 127, 0.16) 0%, rgba(62, 78, 72, 0.09) 36%, transparent 68%),
+    /* Rolling foggy verdigris mist at ground level */
+    radial-gradient(ellipse at 50% 98%, rgba(116, 144, 134, 0.22) 0%, rgba(44, 58, 54, 0.14) 30%, transparent 62%),
+    /* Deep sooty raven-black base */
+    linear-gradient(180deg, #101414 0%, #0b0d0e 52%, #070809 100%);
+}
+
+.map-viewport.dragging {
+  cursor: grabbing;
+}
+
+#map-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Phase region frames — weathered wrought-iron & mist */
+.phase-frame {
+  fill: rgba(14, 18, 18, 0.42);
+  stroke: rgba(150, 168, 158, 0.18);
+  stroke-width: 1;
+  stroke-dasharray: 6 6;
+  rx: 6;
+}
+
+.phase-frame.dlc-frame {
+  fill: rgba(14, 30, 34, 0.42);
+  stroke: rgba(114, 194, 200, 0.3);
+}
+
+.phase-label {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  fill: rgba(164, 184, 174, 0.65);
+  font-weight: 600;
+}
+
+.phase-label.dlc-label {
+  fill: rgba(146, 220, 224, 0.78);
+}
+
+/* Edges / Paths */
+.edge-group {
+  transition: opacity 0.25s ease;
+}
+
+.edge-path {
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  transition: stroke 0.25s ease, stroke-width 0.25s ease, opacity 0.25s ease;
+}
+
+.edge-path.type-main {
+  stroke: rgba(152, 172, 162, 0.56);
+}
+
+.edge-path.type-optional {
+  stroke: rgba(124, 137, 130, 0.42);
+  stroke-dasharray: 6 5;
+}
+
+.edge-path.type-secret {
+  stroke: rgba(176, 132, 152, 0.52);
+  stroke-dasharray: 3 5;
+}
+
+.edge-path.type-dlc {
+  stroke: rgba(102, 174, 180, 0.58);
+  stroke-dasharray: 7 4;
+}
+
+/* Highlighted outgoing paths — vivid Blood Moon crimson pulse */
+.edge-group.is-outgoing .edge-path {
+  stroke: var(--blood-bright);
+  stroke-width: 3.6;
+  stroke-dasharray: 10 6;
+  animation: bloodFlow 1.05s linear infinite;
+  filter: drop-shadow(0 0 7px var(--blood-glow));
+}
+
+.edge-group.is-outgoing.type-dlc .edge-path {
+  stroke: var(--dlc-bright);
+  filter: drop-shadow(0 0 7px var(--dlc-glow));
+}
+
+.edge-group.is-incoming .edge-path {
+  stroke: var(--gold-antique);
+  stroke-width: 2.6;
+  opacity: 0.92;
+}
+
+.edge-group.is-dimmed {
+  opacity: 0.14;
+}
+
+@keyframes bloodFlow {
+  from {
+    stroke-dashoffset: 32;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.edge-badge {
+  cursor: pointer;
+}
+
+.edge-badge-bg {
+  fill: #0d1011;
+  stroke: rgba(150, 168, 158, 0.36);
+  stroke-width: 1;
+  rx: 3;
+  transition: all 0.2s ease;
+}
+
+.edge-badge-text {
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  font-weight: 600;
+  fill: var(--text-ash);
+  text-anchor: middle;
+  dominant-baseline: central;
+  letter-spacing: 0.05em;
+}
+
+.edge-group.is-outgoing .edge-badge-bg {
+  fill: #30080c;
+  stroke: var(--blood-bright);
+  stroke-width: 1.4;
+}
+
+.edge-group.is-outgoing.type-dlc .edge-badge-bg {
+  fill: #0d2428;
+  stroke: var(--dlc-bright);
+}
+
+.edge-group.is-outgoing .edge-badge-text {
+  fill: #fff2f0;
+}
+
+/* Recommended route order polyline */
+.recommended-line {
+  fill: none;
+  stroke: rgba(230, 184, 92, 0.3);
+  stroke-width: 1.6;
+  stroke-dasharray: 4 6;
+  pointer-events: none;
+}
+
+/* Nodes — Dark Gothic Iron Silhouettes with Candlelit Accents */
+.node-group {
+  cursor: pointer;
+  transition: opacity 0.25s ease;
+}
+
+.node-group.is-dimmed {
+  opacity: 0.2;
+}
+
+.node-card {
+  fill: var(--bg-card);
+  stroke: #2c3533;
+  stroke-width: 1.4;
+  rx: 4;
+  transition: fill 0.2s ease, stroke 0.2s ease, filter 0.2s ease;
+}
+
+.node-group.cat-main .node-card {
+  stroke: rgba(150, 168, 158, 0.5);
+}
+
+.node-group.cat-optional .node-card {
+  stroke: rgba(110, 120, 126, 0.44);
+}
+
+.node-group.cat-dlc .node-card {
+  fill: #0e1a1d;
+  stroke: rgba(98, 170, 176, 0.56);
+}
+
+.node-group.type-ending .node-card {
+  fill: #1c0b0e;
+  stroke: rgba(245, 34, 45, 0.72);
+}
+
+.node-group:hover .node-card {
+  fill: var(--bg-card-hover);
+  stroke: var(--gold-antique);
+  filter: drop-shadow(0 0 11px rgba(230, 184, 92, 0.26));
+}
+
+.node-group.cat-dlc:hover .node-card {
+  fill: #132529;
+  stroke: var(--dlc-bright);
+}
+
+/* Selected node — intense Blood Moon glow */
+.node-group.is-selected .node-card {
+  fill: #1e0b0e;
+  stroke: var(--blood-bright);
+  stroke-width: 2.4;
+  filter: drop-shadow(0 0 18px var(--blood-glow));
+}
+
+.node-group.cat-dlc.is-selected .node-card {
+  fill: #0e2429;
+  stroke: var(--dlc-bright);
+  filter: drop-shadow(0 0 18px var(--dlc-glow));
+}
+
+/* Next reachable target nodes — warm tower-window candlelit highlight */
+.node-group.is-next-target .node-card {
+  stroke: var(--gold-antique);
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 12px var(--gold-glow));
+}
+
+.node-group.cat-dlc.is-next-target .node-card {
+  stroke: var(--dlc-bright);
+  filter: drop-shadow(0 0 12px var(--dlc-glow));
+}
+
+/* Completed state — unmistakably distinct emerald-sealed & muted */
+.node-group.is-completed .node-card {
+  fill: var(--completed-bg);
+  stroke: var(--completed-green);
+  stroke-width: 1.8;
+}
+
+.node-group.is-completed .node-title {
+  fill: #8bb89b;
+  text-decoration: line-through;
+  text-decoration-color: rgba(92, 224, 141, 0.55);
+}
+
+.node-group.is-completed .node-subtitle {
+  fill: #5d7d69;
+}
+
+.node-group.is-completed .node-code-badge {
+  fill: #0b2416;
+  stroke: var(--completed-green);
+}
+
+.node-group.is-completed .node-code-text {
+  fill: var(--completed-bright);
+}
+
+.node-group.is-completed.is-selected .node-card {
+  stroke: var(--completed-bright);
+  stroke-width: 2.4;
+  filter: drop-shadow(0 0 16px rgba(56, 184, 106, 0.45));
+}
+
+.node-accent-bar {
+  rx: 2;
+}
+
+.node-group.cat-main .node-accent-bar {
+  fill: var(--blood-crimson);
+}
+
+.node-group.cat-optional .node-accent-bar {
+  fill: #546066;
+}
+
+.node-group.cat-dlc .node-accent-bar {
+  fill: var(--dlc-blue);
+}
+
+.node-group.is-completed .node-accent-bar {
+  fill: var(--completed-bright);
+}
+
+.node-code-badge {
+  fill: #090b0c;
+  stroke: rgba(150, 168, 158, 0.42);
+  stroke-width: 1;
+  rx: 3;
+}
+
+.node-group.cat-main .node-code-badge {
+  stroke: rgba(230, 184, 92, 0.46);
+}
+
+.node-group.cat-dlc .node-code-badge {
+  stroke: rgba(102, 174, 180, 0.58);
+}
+
+.node-code-text {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 700;
+  fill: var(--gold-antique);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.node-group.cat-optional .node-code-text {
+  fill: var(--mist-light);
+}
+
+.node-group.cat-dlc .node-code-text {
+  fill: var(--dlc-bright);
+}
+
+.node-title {
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  font-weight: 400;
+  fill: var(--text-bone);
+  letter-spacing: 0.04em;
+}
+
+.node-subtitle {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 500;
+  fill: var(--text-ash);
+}
+
+.node-order-pill {
+  display: none;
+}
+
+body.show-order .node-order-pill {
+  display: inline;
+}
+
+.node-order-bg {
+  fill: #1b160d;
+  stroke: var(--gold-antique);
+  stroke-width: 1;
+  rx: 9;
+}
+
+.node-order-text {
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  font-weight: 700;
+  fill: var(--gold-antique);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.node-check-seal {
+  display: none;
+}
+
+.node-group.is-completed .node-check-seal {
+  display: inline;
+}

@@ -1,0 +1,206 @@
+/* =========================================================
+   Responsive — Tablet & Mobile Bottom Sheet Layout
+   ========================================================= */
+
+@media (max-width: 1080px) {
+  .brand-text p,
+  .legend-card {
+    display: none;
+  }
+  .search-input {
+    width: 145px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hud-header {
+    height: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px;
+    background: rgba(11, 13, 14, 0.96);
+  }
+
+  .brand {
+    justify-content: space-between;
+  }
+
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+
+  .brand-text h1 {
+    font-size: 17px;
+    letter-spacing: 0.12em;
+  }
+
+  .hud-controls {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .hud-controls::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-group {
+    flex-shrink: 0;
+  }
+
+  .filter-btn {
+    padding: 8px 10px;
+    font-size: 10.5px;
+    min-height: 36px;
+  }
+
+  .search-wrap {
+    flex-shrink: 0;
+  }
+
+  .search-input {
+    width: 150px;
+    font-size: 16px; /* Prevents iOS Safari auto-zoom on focus */
+    padding: 6px 10px;
+    min-height: 36px;
+  }
+
+  .search-input:focus {
+    width: 185px;
+  }
+
+  .search-results {
+    position: fixed;
+    top: calc(104px + env(safe-area-inset-top, 0px));
+    left: 12px;
+    right: 12px;
+    max-height: 45vh;
+  }
+
+  .hud-btn {
+    flex-shrink: 0;
+    padding: 8px 10px;
+    font-size: 10.5px;
+    min-height: 36px;
+  }
+
+  .progress-pill {
+    flex-shrink: 0;
+    padding: 6px 10px;
+    font-size: 10.5px;
+    min-height: 36px;
+  }
+
+  .hint-toast {
+    top: calc(108px + env(safe-area-inset-top, 0px));
+    left: 12px;
+    right: 12px;
+    transform: none;
+    text-align: center;
+    font-size: 13px;
+    padding: 7px 10px;
+  }
+
+  /* Mobile Bottom Sheet for Hunter's Journal */
+  .detail-drawer {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 54vh;
+    max-height: 68vh;
+    border-radius: 14px 14px 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    transform: translateY(105%);
+  }
+
+  .detail-drawer.open {
+    transform: translateY(0);
+  }
+
+  .drawer-handle {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0 2px;
+    background: rgba(201, 24, 34, 0.08);
+    flex-shrink: 0;
+  }
+
+  .drawer-handle span {
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(150, 168, 158, 0.42);
+  }
+
+  .drawer-header {
+    padding: 10px 16px 12px;
+  }
+
+  .drawer-close {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+    top: 8px;
+    right: 12px;
+  }
+
+  .drawer-title {
+    font-size: 20px;
+  }
+
+  .drawer-body {
+    padding: 14px 16px 20px;
+    gap: 14px;
+  }
+
+  .path-card {
+    padding: 11px 12px;
+    min-height: 48px;
+  }
+
+  .complete-btn {
+    padding: 12px 14px;
+    min-height: 44px;
+  }
+
+  /* Zoom controls on mobile */
+  .bottom-left-bar {
+    left: auto;
+    right: 14px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  body.drawer-open .bottom-left-bar {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
+  }
+
+  .zoom-btn {
+    padding: 10px 14px;
+    font-size: 14px;
+    min-height: 42px;
+    min-width: 42px;
+  }
+
+  .overlay-popover {
+    top: calc(108px + env(safe-area-inset-top, 0px));
+    left: 12px;
+    right: 12px;
+    width: auto;
+  }
+}

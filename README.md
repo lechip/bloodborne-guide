@@ -16,6 +16,26 @@ An interactive, spoiler-light HTML node map for navigating **Bloodborne** and **
 - **Filters & Search:** Filter by `All`, `Main`, `Optional`, or `DLC`, and search by boss, area, or node code.
 - **Future Map Overlay Ready:** Includes a **Map Overlay** tool to load a Yharnam map image behind the SVG node graph with adjustable opacity and scale.
 
+## Project Structure
+
+```
+├── index.html          # Main entry point & SVG map shell
+├── css/
+│   ├── theme.css       # Color palette, fonts, reset & atmospheric backdrop
+│   ├── hud.css         # Top bar, filters, search, legend, zoom & overlay controls
+│   ├── map.css         # SVG phase frames, paths, animations & node cards
+│   ├── drawer.css      # Hunter's Journal detail panel & path cards
+│   └── responsive.css  # Tablet & mobile bottom-sheet / touch layout
+└── js/
+    ├── data.js         # Progression nodes, numbered paths & phase definitions
+    ├── state.js        # Central state, adjacency maps & localStorage persistence
+    ├── renderer.js     # SVG rendering & active/completed highlight states
+    ├── camera.js       # Pan, wheel zoom, touch drag & pinch-to-zoom
+    ├── drawer.js       # Hunter's Journal UI & mobile swipe-to-dismiss
+    ├── hud.js          # Filters, search dropdown, route order & overlay controls
+    └── main.js         # App bootstrap & module wiring
+```
+
 ## Local Usage
 
 No build step or dependencies required — simply open `index.html` in any modern browser.

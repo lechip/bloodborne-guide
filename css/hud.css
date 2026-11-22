@@ -1,0 +1,392 @@
+/* =========================================================
+   Top HUD Header, Search, Legend, Zoom & Overlay Popover
+   ========================================================= */
+
+.hud-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 20px;
+  background: linear-gradient(180deg, rgba(10, 11, 12, 0.98) 0%, rgba(13, 15, 16, 0.9) 85%, rgba(13, 15, 16, 0) 100%);
+  border-bottom: 1px solid rgba(150, 168, 158, 0.22);
+  backdrop-filter: blur(8px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* Glowing Blood Moon emblem inside dark wrought-iron diamond */
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(245, 34, 45, 0.55);
+  background: radial-gradient(circle at 50% 45%, #f5222d 0%, #a8121c 45%, #160a0c 100%);
+  color: #ffe8d6;
+  font-family: var(--font-display);
+  font-size: 15px;
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  box-shadow: 0 0 18px rgba(245, 34, 45, 0.45), inset 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.brand-mark span {
+  transform: rotate(-45deg);
+}
+
+.brand-text h1 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--text-bone);
+  text-transform: uppercase;
+  line-height: 1.05;
+  white-space: nowrap;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
+}
+
+.brand-text p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--mist-light);
+  letter-spacing: 0.06em;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
+.hud-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+.filter-group {
+  display: flex;
+  background: rgba(15, 18, 19, 0.92);
+  border: 1px solid var(--border-iron);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.filter-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-ash);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 7px 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-right: 1px solid var(--border-iron);
+}
+
+.filter-btn:last-child {
+  border-right: none;
+}
+
+.filter-btn:hover {
+  color: var(--text-bone);
+  background: rgba(150, 168, 158, 0.1);
+}
+
+.filter-btn.active {
+  color: #fff2f0;
+  background: rgba(201, 24, 34, 0.28);
+  box-shadow: inset 0 -2px 0 var(--blood-bright);
+}
+
+.filter-btn[data-filter="dlc"].active {
+  color: #e4f8fa;
+  background: rgba(88, 155, 163, 0.25);
+  box-shadow: inset 0 -2px 0 var(--dlc-bright);
+}
+
+.search-wrap {
+  position: relative;
+}
+
+.search-input {
+  width: 195px;
+  background: rgba(14, 17, 18, 0.94);
+  border: 1px solid var(--border-iron);
+  border-radius: 3px;
+  padding: 6px 10px;
+  color: var(--text-bone);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s ease, width 0.2s ease;
+}
+
+.search-input::placeholder {
+  color: var(--text-ash);
+}
+
+.search-input:focus {
+  border-color: var(--mist-light);
+  width: 225px;
+}
+
+.search-results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-gold);
+  border-radius: 3px;
+  max-height: 280px;
+  overflow-y: auto;
+  display: none;
+  z-index: 60;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.85);
+}
+
+.search-results.open {
+  display: block;
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(150, 168, 158, 0.08);
+  font-family: var(--font-ui);
+  font-size: 14px;
+}
+
+.search-item:hover {
+  background: rgba(201, 24, 34, 0.16);
+}
+
+.search-item-code {
+  font-family: var(--font-display);
+  font-size: 10px;
+  color: var(--gold-antique);
+  min-width: 28px;
+}
+
+.search-item-title {
+  color: var(--text-bone);
+  font-weight: 500;
+}
+
+.hud-btn {
+  background: rgba(15, 18, 19, 0.92);
+  border: 1px solid var(--border-iron);
+  color: var(--text-parchment);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 7px 11px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.hud-btn:hover {
+  border-color: var(--mist-light);
+  color: var(--text-bone);
+}
+
+.hud-btn.active {
+  border-color: var(--gold-antique);
+  color: var(--gold-antique);
+  background: rgba(230, 184, 92, 0.12);
+}
+
+.progress-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border: 1px solid rgba(150, 168, 158, 0.26);
+  background: rgba(15, 18, 19, 0.92);
+  border-radius: 3px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-parchment);
+  white-space: nowrap;
+}
+
+.progress-pill strong {
+  color: var(--gold-antique);
+  font-weight: 600;
+}
+
+/* Bottom Legend & Zoom Controls */
+.bottom-left-bar {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.legend-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 14px;
+  background: rgba(13, 16, 17, 0.92);
+  border: 1px solid rgba(150, 168, 158, 0.22);
+  border-radius: 3px;
+  backdrop-filter: blur(6px);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-parchment);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  width: 18px;
+  height: 2px;
+  display: inline-block;
+}
+
+.swatch-main { background: var(--mist-light); }
+.swatch-opt { border-top: 2px dashed #7c8982; }
+.swatch-secret { border-top: 2px dotted var(--secret-bright); }
+.swatch-dlc { border-top: 2px dashed var(--dlc-bright); }
+
+.zoom-controls {
+  display: flex;
+  background: rgba(13, 16, 17, 0.94);
+  border: 1px solid rgba(150, 168, 158, 0.24);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.zoom-btn {
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border-iron);
+  color: var(--text-parchment);
+  padding: 7px 11px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.zoom-btn:last-child {
+  border-right: none;
+}
+
+.zoom-btn:hover {
+  background: rgba(150, 168, 158, 0.14);
+  color: var(--text-bone);
+}
+
+/* Overlay Popover (Future Map Alignment Ready) */
+.overlay-popover {
+  position: fixed;
+  top: 72px;
+  right: 18px;
+  width: 300px;
+  z-index: 50;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-gold);
+  border-radius: 4px;
+  padding: 14px 16px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.88);
+  display: none;
+}
+
+.overlay-popover.open {
+  display: block;
+}
+
+.overlay-popover h3 {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-antique);
+  margin-bottom: 6px;
+}
+
+.overlay-popover p {
+  font-size: 13.5px;
+  color: var(--text-ash);
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.overlay-field {
+  margin-bottom: 10px;
+}
+
+.overlay-field label {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--text-parchment);
+  margin-bottom: 4px;
+}
+
+.overlay-field input[type="file"],
+.overlay-field input[type="range"] {
+  width: 100%;
+  font-size: 12px;
+  color: var(--text-parchment);
+}
+
+.overlay-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.hint-toast {
+  position: fixed;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  background: rgba(13, 16, 17, 0.9);
+  border: 1px solid rgba(150, 168, 158, 0.25);
+  padding: 6px 14px;
+  border-radius: 3px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-parchment);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.hint-toast.hidden {
+  opacity: 0;
+}
